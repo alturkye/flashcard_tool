@@ -21,12 +21,11 @@ def add_card():
 def view_deck():
     print("\n--- DECK LIBRARY ---")
     print("Benefit: Reviewing your list helps you see your overall progress ") # IH#1
+    print(f"You have {len(study_deck)} cards in this deck.") # IH#2 (cost)
 
     if not study_deck:
         print("[!] Your deck is currently empty, try adding a card first")
         return
-
-    print(f"You have {len(study_deck)} cards in this deck.") # IH#2 (cost)
 
     # simple list of terms
     for i, term in enumerate(study_deck.keys(), 1):
@@ -70,7 +69,10 @@ def start_quiz():
         if choice == 'h':
             # IH#8 tinkering (safety)
             print(f"Hint: the answer starts with '{definition[0]}' and has {len(definition)} characters")
-            input("Ready? Press [enter] to see the full answer...")
+            quit_check = input("Ready? Press [enter] for answer, or [Q] to quit: ").strip().lower()
+            if quit_check == 'q':
+                if input("Quit quiz? (y/n): ").lower() == 'y':
+                    return
 
         print(f"ANSWER: {definition}")
 
@@ -100,7 +102,7 @@ def main_menu():
         if choice == '1':
             start_quiz()
         elif choice == '2':
-            print(f"Current Deck: {study_deck}")
+            view_deck()
         elif choice == '3':
             add_card()
         elif choice == 'q':
