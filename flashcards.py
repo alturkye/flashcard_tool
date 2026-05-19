@@ -78,7 +78,7 @@ def start_quiz():
         print(f"ANSWER: {definition}")
 
         feedback = input("Did you get it right? (y/n) or [Q] to Quit: ").strip().lower()
-        if feedback == 'y':
+        if feedback in ['y', 'yes']: # IH7 multiple approaches
             score += 1
         elif feedback == 'q':
             # IH#8 confirmation prompt
