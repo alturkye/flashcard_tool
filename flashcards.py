@@ -7,16 +7,21 @@ def add_card():
     print("\n--- ADD A NEW FLASHCARD ---")
     print("Benefit: Adding your own terms helps personalize your learning") # IH#1 (benefits)
 
-    term = input("Step 1: Enter the term: ").strip()
-    definition = input("Step 2: Enter the definition: ").strip()
+    # IH#5 (undo/backtracking)
+    print("Note: Leave a field blank and press Enter to safely cancel and backtrack.")
 
-    # IH#8 (tinkering/error prevention)
-    if not term or not definition:
-        print("\n[!] ERROR: Both fields are required, card not saved")
+    term = input("Step 1: Enter the term: ").strip()
+    if not term:
+        print("\n[C] Cancelled: Backtracking to Main Menu without saving.")
+        return
+
+    definition = input("Step 2: Enter the definition: ").strip()
+    if not definition:
+        print("\n[C] Cancelled: Backtracking to Main Menu without saving.")
         return
 
     study_deck[term] = definition
-    print(f"\n[S] SUCCESS: Card '{term}' added to your local deck") # IH#2 (privacy/cost info)
+    print(f"\n[S] SUCCESS: Card '{term}' added to your local deck")
 
 def view_deck():
     print("\n--- DECK LIBRARY ---")
@@ -49,30 +54,26 @@ def view_deck():
 
 def start_quiz():
     if not study_deck:
-        print("\n[!] Your deck is empty, add some cards before starting a quiz")
+        print("[!] Your deck is empty, add some cards first!")
         return
 
-    print("\n--- QUIZ MODE ---")
-    print("Benefit: Active recall is the fastest way to memorize new info") # IH#1
-
-    cards = list(study_deck.items())
-    total = len(cards)
+    total = len(study_deck)
     score = 0
 
-    for i, (term, definition) in enumerate(cards, 1):
-        print(f"\n--- Card {i} of {total} ---") # IH#2 (scope/progress)
+    # enumerate() automatically counts which card you are on (1, 2, 3...)
+    for current_card_number, (term, definition) in enumerate(study_deck.items(), 1):
+
+        # IH#2: Calculate time remaining and print it (Updates every loop!)
+        time_remaining = (total - current_card_number + 1) * 0.5
+        print(f"\nCard {current_card_number} out of {total} (Approx. {time_remaining} minutes remaining)")
+
         print(f"QUESTION: {term}")
+        choice = input("Press enter to flip or [Q] to quit... ")
 
-        # IH#7 (different approaches)
-        choice = input("Press [enter] to flip or type [H] for a hint: ").strip().lower()
-
-        if choice == 'h':
-            # IH#8 tinkering (safety)
-            print(f"Hint: the answer starts with '{definition[0]}' and has {len(definition)} characters")
-            quit_check = input("Ready? Press [enter] for answer, or [Q] to quit: ").strip().lower()
-            if quit_check == 'q':
-                if input("Quit quiz? (y/n): ").lower() == 'y':
-                    return
+        if choice.lower() == 'q':
+            # IH#8 confirmation prompt
+            if input("Quit quiz? Progress will not be saved (y/n): ").lower() == 'y':
+                return
 
         print(f"ANSWER: {definition}")
 
